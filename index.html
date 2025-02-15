@@ -3,152 +3,226 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>To do List</title>
+    <title>To Do List</title>
     <style>
-        #Input, #submit, #delete{
-            font-size: large;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
         }
-        #list div {
-            margin-bottom: 5px;
-            padding: 5px;
-            border: 1px solid #ccc;
+
+        body {
+            background-color: #282c34;
+            color: #f3f4f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #ffcc00;
+        }
+
+        #Input {
+            padding: 10px;
+            font-size: 16px;
+            width: 250px;
+            margin-right: 10px;
             border-radius: 5px;
-            font-size: larger;
+            border: 2px solid #ccc;
+            outline: none;
+        }
+
+        #submit, #delete {
+            padding: 10px 15px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            border: none;
+            background-color: #ffcc00;
+            color: #333;
+            transition: background-color 0.3s ease;
+        }
+
+        #submit:hover, #delete:hover {
+            background-color: #f7b500;
+        }
+
+        #list {
+            width: 80%;
+            max-width: 500px;
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #list div {
+            display: flex;
+            align-items: center;
+            background-color: #3a3f47;
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+
+        #list div:hover {
+            background-color: #4c5360;
         }
 
         #list span {
-            display: inline-block;
+            flex: 1;
+            font-size: 1.2em;
+            margin-right: 10px;
+        }
+
+        #list input {
+            padding: 5px;
+            font-size: 1em;
+            margin-right: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
         }
 
         #list button {
-            display: inline-block;
-            margin-left: 10px;
-            padding: 3px 5px;
+            padding: 5px 10px;
             font-size: 14px;
+            margin-left: 5px;
+            border-radius: 5px;
+            border: none;
             cursor: pointer;
-        }
-        *{
-            font-family: sans-serif;
+            background-color: #28a745;
             color: white;
-            background-color: rgb(66, 64, 64);
+            transition: background-color 0.3s ease;
         }
+
+        #list button:hover {
+            background-color: #218838;
+        }
+
+        .removed-task {
+            background-color: #6c757d;
+        }
+
         .removed-task span {
             text-decoration: line-through;
+            color: #ccc;
+        }
+        
+        .removed-task button {
+            background-color: #dc3545;
+        }
+
+        .removed-task button:hover {
+            background-color: #c82333;
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>To Do list</h1>
-    </header>
-    <input type="text" id="Input" placeholder="Enter Task To do">
-    <button id="submit" onclick="add()">Add</button>
-    <button id="delete" onclick="deleteRemoved()">Remove all</button>
-    <div id="list"></div>
-</body>
-<script>
-  
-    window.onload = function() {
-        loadTasks();
-    };
+    <div>
+        <header>
+            <h1>To Do List</h1>
+        </header>
+        <input type="text" id="Input" placeholder="Enter Task To Do">
+        <button id="submit" onclick="add()">Add</button>
+        <button id="delete" onclick="deleteRemoved()">Remove All</button>
+        <div id="list"></div>
+    </div>
 
-    function add() {
-        
-        let task = document.getElementById("Input").value;
-
-      
-        let newItem = document.createElement("div");
-
-       
-        let taskSpan = document.createElement("span");
-        taskSpan.textContent = task;
-
-  
-        let editInput = document.createElement("input");
-        editInput.type = "text";
-        editInput.value = task;
-        editInput.style.display = "none"; 
-
-       
-        let editButton = document.createElement("button");
-        editButton.textContent = "Edit";
-        editButton.onclick = function() {
-            taskSpan.style.display = "none"; 
-            editInput.style.display = "inline-block";
-            editInput.focus(); 
-            saveButton.style.display = "inline-block"; 
-            editButton.style.display = "none"; 
+    <script>
+        window.onload = function() {
+            loadTasks();
         };
 
-    
-        let saveButton = document.createElement("button");
-        saveButton.textContent = "Save";
-        saveButton.style.display = "none"; 
-        saveButton.onclick = function() {
-            taskSpan.textContent = editInput.value; 
-            taskSpan.style.display = "inline-block";
+        function add() {
+            let task = document.getElementById("Input").value;
+
+            let newItem = document.createElement("div");
+
+            let taskSpan = document.createElement("span");
+            taskSpan.textContent = task;
+
+            let editInput = document.createElement("input");
+            editInput.type = "text";
+            editInput.value = task;
             editInput.style.display = "none"; 
-            saveButton.style.display = "none";
-            editButton.style.display = "inline-block";
-            saveTasks();
-        };
 
-    
-        let doneButton = document.createElement("button");
-        doneButton.textContent = "Done";
-        doneButton.onclick = function() {
-            removeTask(newItem);
-        };
+            let editButton = document.createElement("button");
+            editButton.textContent = "Edit";
+            editButton.onclick = function() {
+                taskSpan.style.display = "none"; 
+                editInput.style.display = "inline-block";
+                editInput.focus(); 
+                saveButton.style.display = "inline-block"; 
+                editButton.style.display = "none"; 
+            };
 
-       
-        newItem.appendChild(taskSpan);
-        newItem.appendChild(editInput);
-        newItem.appendChild(editButton);
-        newItem.appendChild(saveButton);
-        newItem.appendChild(doneButton);
+            let saveButton = document.createElement("button");
+            saveButton.textContent = "Save";
+            saveButton.style.display = "none"; 
+            saveButton.onclick = function() {
+                taskSpan.textContent = editInput.value; 
+                taskSpan.style.display = "inline-block";
+                editInput.style.display = "none"; 
+                saveButton.style.display = "none";
+                editButton.style.display = "inline-block";
+                saveTasks();
+            };
 
- 
-        document.getElementById("list").appendChild(newItem);
+            let doneButton = document.createElement("button");
+            doneButton.textContent = "Done";
+            doneButton.onclick = function() {
+                removeTask(newItem);
+            };
 
-        
-        document.getElementById("Input").value = "";
-    }
+            newItem.appendChild(taskSpan);
+            newItem.appendChild(editInput);
+            newItem.appendChild(editButton);
+            newItem.appendChild(saveButton);
+            newItem.appendChild(doneButton);
 
+            document.getElementById("list").appendChild(newItem);
 
-    function removeTask(taskElement) {
-        taskElement.classList.add("removed-task"); 
-        saveTasks();
-    }
-
-
-    function deleteRemoved() {
-        let removedTasks = document.querySelectorAll('.removed-task');
-        removedTasks.forEach(function(task) {
-            task.remove();
-        });
-        saveTasks();
-    }
-
-
-    function saveTasks() {
-        let tasks = document.getElementById("list").innerHTML;
-        localStorage.setItem("tasks", tasks);
-    }
-
-    
-    function loadTasks() {
-        let tasks = localStorage.getItem("tasks");
-        if (tasks) {
-            document.getElementById("list").innerHTML = tasks;
-            
-            let removeButtons = document.querySelectorAll("#list button");
-            removeButtons.forEach(function(button) {
-                button.onclick = function() {
-                    let taskElement = button.parentNode;
-                    removeTask(taskElement);
-                };
-            });
+            document.getElementById("Input").value = "";
         }
-    }
-</script>
+
+        function removeTask(taskElement) {
+            taskElement.classList.add("removed-task"); 
+            saveTasks();
+        }
+
+        function deleteRemoved() {
+            let removedTasks = document.querySelectorAll('.removed-task');
+            removedTasks.forEach(function(task) {
+                task.remove();
+            });
+            saveTasks();
+        }
+
+        function saveTasks() {
+            let tasks = document.getElementById("list").innerHTML;
+            localStorage.setItem("tasks", tasks);
+        }
+
+        function loadTasks() {
+            let tasks = localStorage.getItem("tasks");
+            if (tasks) {
+                document.getElementById("list").innerHTML = tasks;
+
+                let removeButtons = document.querySelectorAll("#list button");
+                removeButtons.forEach(function(button) {
+                    button.onclick = function() {
+                        let taskElement = button.parentNode;
+                        removeTask(taskElement);
+                    };
+                });
+            }
+        }
+    </script>
+</body>
 </html>
