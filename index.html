@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To do List</title>
+    <style>
+        #Input, #submit, #delete{
+            font-size: large;
+        }
+        #list div {
+            margin-bottom: 5px;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: larger;
+        }
+
+        #list span {
+            display: inline-block;
+        }
+
+        #list button {
+            display: inline-block;
+            margin-left: 10px;
+            padding: 3px 5px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        *{
+            font-family: sans-serif;
+            color: white;
+            background-color: rgb(66, 64, 64);
+        }
+        .removed-task span {
+            text-decoration: line-through;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>To Do list</h1>
+    </header>
+    <input type="text" id="Input" placeholder="Enter Task To do">
+    <button id="submit" onclick="add()">Add</button>
+    <button id="delete" onclick="deleteRemoved()">Remove all</button>
+    <div id="list"></div>
+</body>
+<script>
+  
+    window.onload = function() {
+        loadTasks();
+    };
+
+    function add() {
+        
+        let task = document.getElementById("Input").value;
+
+      
+        let newItem = document.createElement("div");
+
+       
+        let taskSpan = document.createElement("span");
+        taskSpan.textContent = task;
+
+  
+        let editInput = document.createElement("input");
+        editInput.type = "text";
+        editInput.value = task;
+        editInput.style.display = "none"; 
+
+       
+        let editButton = document.createElement("button");
+        editButton.textContent = "Edit";
+        editButton.onclick = function() {
+            taskSpan.style.display = "none"; 
+            editInput.style.display = "inline-block";
+            editInput.focus(); 
+            saveButton.style.display = "inline-block"; 
+            editButton.style.display = "none"; 
+        };
+
+    
+        let saveButton = document.createElement("button");
+        saveButton.textContent = "Save";
+        saveButton.style.display = "none"; 
+        saveButton.onclick = function() {
+            taskSpan.textContent = editInput.value; 
+            taskSpan.style.display = "inline-block";
+            editInput.style.display = "none"; 
+            saveButton.style.display = "none";
+            editButton.style.display = "inline-block";
+            saveTasks();
+        };
+
+    
+        let doneButton = document.createElement("button");
+        doneButton.textContent = "Done";
+        doneButton.onclick = function() {
+            removeTask(newItem);
+        };
+
+       
+        newItem.appendChild(taskSpan);
+        newItem.appendChild(editInput);
+        newItem.appendChild(editButton);
+        newItem.appendChild(saveButton);
+        newItem.appendChild(doneButton);
+
+ 
+        document.getElementById("list").appendChild(newItem);
+
+        
+        document.getElementById("Input").value = "";
+    }
+
+
+    function removeTask(taskElement) {
+        taskElement.classList.add("removed-task"); 
+        saveTasks();
+    }
+
+
+    function deleteRemoved() {
+        let removedTasks = document.querySelectorAll('.removed-task');
+        removedTasks.forEach(function(task) {
+            task.remove();
+        });
+        saveTasks();
+    }
+
+
+    function saveTasks() {
+        let tasks = document.getElementById("list").innerHTML;
+        localStorage.setItem("tasks", tasks);
+    }
+
+    
+    function loadTasks() {
+        let tasks = localStorage.getItem("tasks");
+        if (tasks) {
+            document.getElementById("list").innerHTML = tasks;
+            
+            let removeButtons = document.querySelectorAll("#list button");
+            removeButtons.forEach(function(button) {
+                button.onclick = function() {
+                    let taskElement = button.parentNode;
+                    removeTask(taskElement);
+                };
+            });
+        }
+    }
+</script>
+</html>
